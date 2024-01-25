@@ -1,33 +1,63 @@
-function caesar(input, shift, encode = true) {
-  if (typeof shift !== 'number' || shift === 0 || shift < -25 || shift > 25) {
-    return false;
-  }
+const polybiusModule = (function () {
+  function polybius(input, encode = true) {
+    // global variables
+    let square = [
+      ["a", "b", "c", "d", "e"],
+      ["f", "g", "h", "(i/j)", "k"],
+      ["l", "m", "n", "o", "p"],
+      ["q", "r", "s", "t", "u"],
+      ["v", "w", "x", "y", "z", " "],
+    ];
 
-  const lowerInput = input.toLowerCase();
-  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    let result;
 
-  let result = '';
+    if (encode) {
+      let inputArray = input.split("");
+      let fixedInputArray = inputArray.map((string) => {
+        let lowCase = string.toLowerCase();
+        if (lowCase === "i" || lowCase === "j") {
+          return "(i/j)";
+        }
+        return lowCase;
+      });
 
-  for (let i = 0; i < lowerInput.length; i++) {
-    const currentChar = lowerInput[i];
-    if (alphabet.includes(currentChar)) {
-      const index = alphabet.indexOf(currentChar);
-      let shiftedIndex;
-      if (encode) {
-        shiftedIndex = (index + shift) % 26;
-      } else {
-        shiftedIndex = (index - shift) % 26;
-      }
-      if (shiftedIndex < 0) {
-        shiftedIndex += 26;
-      }
-      result += alphabet[shiftedIndex];
-    } else {
-      result += currentChar;
+      let xArr = [];
+      let yArr = fixedInputArray.map((letter) => {
+        for (let i = 0; i < square.length; i++) {
+          const row = square[i];
+          if (row.find((alpha) => alpha === letter)) {
+            xArr.push(i + 1);
+            return row.indexOf(letter) + 1;
+          }
+        }
+      });
+
+      result = xArr.reduce((acc, xValue, index) => {
+        let pair = `${yArr[index]}${xValue}`;
+        if (pair === "65") {
+          pair = " ";
+        }
+        acc.push(pair);
+        return acc;
+      }, []);
     }
+
+    if (!encode) {
+      let spacesAdded = input.replace(/ /g, "65");
+      if (spacesAdded.length % 2 !== 0) return false;
+      let coordinates = spacesAdded.match(/..?/g);
+      result = coordinates.map((yx) => {
+        let rowIndex = yx.split("")[1] - 1;
+        let columnIndex = yx.split("")[0] - 1;
+        return square[rowIndex][columnIndex];
+      });
+    }
+    return result.join("");
   }
 
-  return result;
-}
+  return {
+    polybius,
+  };
+})();
 
-module.exports = { caesar };
+module.exports = polybiusModule;

@@ -9,10 +9,13 @@ function caesar(input, shift, encode = true) {
   let result = '';
 
   for (let i = 0; i < lowerInput.length; i++) {
+    
     const currentChar = lowerInput[i];
+    
     if (alphabet.includes(currentChar)) {
       const index = alphabet.indexOf(currentChar);
       let shiftedIndex;
+     
       if (encode) {
         shiftedIndex = (index + shift) % 26;
       } else {

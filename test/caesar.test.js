@@ -21,6 +21,13 @@ describe('Caesar Cipher', function () {
     );
   });
 
+  it('should encode "Zebra Magazine" with a shift of 3', function () {
+    assert.strictEqual(
+      caesar("Zebra Magazine", 3),
+      'cheud pdjdclqh'
+    );
+  });
+
   it('should decode "BPQA qa I amkzmb umaaiom!" with a shift of 8', function () {
     assert.strictEqual(
       caesar("BPQA qa I amkzmb umaaiom!", 8, false),
